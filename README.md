@@ -1,1 +1,0 @@
-# inoa-challenge

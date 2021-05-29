@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+isort = "*"
+flake8 = "*"
+
+[packages]
+beautifulsoup4 = "*"
+requests = "*"
+python-crontab = "*"
+pymysql = "*"
+
+[requires]
+python_version = "3.7"

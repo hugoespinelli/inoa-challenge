@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'stock'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysqlinstance:/var/lib/mysql
+  # back:
+  #   build: "./back"
+  #   links:
+  #     - redis
+  #   command: python manage.py runserver 0.0.0.0:5000
+  #   ports:
+  #   - "5000:5000"
+  #   depends_on:
+  #     - db
+  # front:
+  #   build: "./front"
+  #   ports:
+  #     - "80:80"
+  # scrap:
+  #   build: "./scraper"
+  # redis:
+  #   image: redis
+volumes: 
+  mysqlinstance:
