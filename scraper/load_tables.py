@@ -1,18 +1,17 @@
 import pymysql.cursors
-import json
 
 from utils import load_stocks_from_file
 
 
 def get_stocks_registered(cursor, stock_list):
-    sql = "SELECT `id`, `name` FROM `stock` WHERE `name` in ({})".format(format_placeholders())
-    cursor.execute(sql, stock_list)
+    codes = [s["code"] for s in stock_list]
+    sql = "SELECT `id`, `code` FROM `stock` WHERE `code` in ({})".format(format_placeholders(codes))
+    cursor.execute(sql, codes)
     return list(cursor)
 
 
 def format_placeholders(placeholders):
     return ", ".join(["%s"] * len(placeholders))
-
 
 
 def insert_price_stocks(cursor, price_stocks):
@@ -21,6 +20,8 @@ def insert_price_stocks(cursor, price_stocks):
 
 
 def load_tables():
+
+    print("Starting load prices process...")
 
     # Connect to the database
     connection = pymysql.connect(host='localhost',
@@ -34,9 +35,9 @@ def load_tables():
         with connection.cursor() as cursor:
 
             stocks_scraped = load_stocks_from_file()
+            print("Searching stocks registered...")
             stocks_registered = get_stocks_registered(cursor, stocks_scraped)
             prices_to_be_inserted = []
-
             stocks_registered_indexed_by_code = {s["code"]: s for s in stocks_registered}
 
             for stock in stocks_scraped:
@@ -48,10 +49,7 @@ def load_tables():
                         (stocks_registered_indexed_by_code[code]["id"], stock["price"])
                     )
 
-            # Create a new record
+            print(f"Inserting new {len(prices_to_be_inserted)} stocks prices...")
             insert_price_stocks(cursor, prices_to_be_inserted)
 
         connection.commit()
-
-
-
