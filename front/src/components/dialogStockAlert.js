@@ -9,13 +9,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function DialogStockAlert({action, open, handleClose, onClick}) {
+import { ALERT_ACTIONS } from "../constants";
 
-  const [values, setValues] = React.useState(1320);
+export default function DialogStockAlert({action, open, handleClose, onClick}) {
+ 
+  const [price, setprice] = React.useState(action.stock.price / 100);
 
   const handleChange = (value) => {
-    console.log(value)
-    setValues(value);
+    setprice(value);
   };
 
   return (
@@ -24,17 +25,17 @@ export default function DialogStockAlert({action, open, handleClose, onClick}) {
           onClose={handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Alerta de {action}</DialogTitle>
+          <DialogTitle id="form-dialog-title">Alerta de {action.action}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Insira o valor que deseja emitir o alerta para a {action}.
+              Insira o valor que deseja emitir o alerta para a {action.action}.
             </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="price"
               label="Preço ação"
-              value={values}
+              value={price}
               onChange={handleChange}
               fullWidth
               InputProps={{
@@ -43,11 +44,11 @@ export default function DialogStockAlert({action, open, handleClose, onClick}) {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={onClick} color="primary">
+            <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={onClick} color="primary">
-             {action}
+            <Button onClick={() => onClick(action, price)} color="primary">
+             {action.action}
             </Button>
           </DialogActions>
         </Dialog>
@@ -56,7 +57,9 @@ export default function DialogStockAlert({action, open, handleClose, onClick}) {
 
 DialogStockAlert.propTypes = {
   open: PropTypes.bool.isRequired,
-  action: PropTypes.string.isRequired,
+  action: PropTypes.shape({
+    action: PropTypes.oneOf([ALERT_ACTIONS.BUY, ALERT_ACTIONS.SELL]).isRequired
+  }),
   handleClose: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
 };

@@ -1,39 +1,52 @@
 import React from "react";
-import Button from '@material-ui/core/Button';
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import MaterialTable from "material-table";
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogStockAlert from '../components/dialogStockAlert';
+import DialogStockAlert from "../components/dialogStockAlert";
+
+import StockApi from "../logic/stockApi";
+import { ALERT_ACTIONS } from "../constants";
 
 export default function StockContainer() {
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [action, setAction] = React.useState("");
+  const [action, setAction] = React.useState({
+    stock: {},
+    action: "",
+  });
 
-  const handleOpen = (rowData, action) => {
+  const handleOpen = (rowData, newAction) => {
     setModalOpen(true);
-    setAction(action);
+    setAction({
+      stock: rowData,
+      action: newAction,
+    });
   };
 
   const handleClose = () => {
     setModalOpen(false);
   };
 
+  const renderDialog = () => {
+    return modalOpen ? (
+      <DialogStockAlert
+        open={modalOpen}
+        handleClose={handleClose}
+        action={action}
+        onClick={handleActionModal}
+      />
+    ) : (
+      <></>
+    );
+  };
+
+  const handleActionModal = (action, price) => {
+    StockApi.createAlert(action.stock.id, price * 100, action.action);
+  };
+
   return (
     <React.Fragment>
-      <Container fluid style={{ backgroundColor: "#e7e7e7" }}>
-        <DialogStockAlert
-          open={modalOpen}
-          handleClose={handleClose}
-          action={action}
-          onClick={() => console.log("compra")}
-        />
+      <Container>
+        {renderDialog()}
         <Grid container spacing={4}>
           <Grid item md={6}>
             <MaterialTable
@@ -57,22 +70,19 @@ export default function StockContainer() {
                 { title: "Código", field: "code" },
                 { title: "Preço", field: "price" },
               ]}
-              data={[
-                { code: "PETR4", price: 1990 },
-                { code: "BTG11", price: 10123 },
-              ]}
+              data={() => StockApi.list()}
               actions={[
                 {
                   icon: "add_alert",
                   iconProps: { color: "primary" },
                   tooltip: "Alerta de Compra",
-                  onClick: (event, rowData) => handleOpen(rowData, "Compra"),
+                  onClick: (event, rowData) => handleOpen(rowData, ALERT_ACTIONS.BUY),
                 },
                 (rowData) => ({
                   icon: "add_alert",
                   iconProps: { color: "error" },
                   tooltip: "Alerta de Venda",
-                  onClick: (event, rowData) => handleOpen(rowData, "Venda"),
+                  onClick: (event, rowData) => handleOpen(rowData, ALERT_ACTIONS.SELL),
                 }),
               ]}
               options={{
@@ -101,13 +111,9 @@ export default function StockContainer() {
               }}
               columns={[
                 { title: "Código", field: "code" },
-                { title: "Preço", field: "price" },
                 { title: "Alerta de preço", field: "price_alert" },
               ]}
-              data={[
-                { code: "PETR4", price: 1990, price_alert: 1880 },
-                { code: "BTG11", price: 10123, price_alert: 10022 },
-              ]}
+              data={() => StockApi.listAlert()}
               actions={[
                 {
                   icon: "edit",
@@ -120,7 +126,6 @@ export default function StockContainer() {
                   tooltip: "Deletar",
                   onClick: (event, rowData) =>
                     console.log("You want to delete " + rowData.name),
-                  disabled: rowData.birthYear < 2000,
                 }),
               ]}
               options={{
