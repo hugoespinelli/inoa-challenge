@@ -14,22 +14,20 @@ services:
       - '3306'
     volumes:
       - mysqlinstance:/var/lib/mysql
-  # back:
-  #   build: "./back"
-  #   links:
-  #     - redis
-  #   command: python manage.py runserver 0.0.0.0:5000
-  #   ports:
-  #   - "5000:5000"
-  #   depends_on:
-  #     - db
-  # front:
-  #   build: "./front"
-  #   ports:
-  #     - "80:80"
+  back:
+    build: "./back"
+    volumes:
+      - ./back:/app
+    command: python manage.py runserver 0.0.0.0:5000
+    ports:
+    - "5000:5000"
+    depends_on:
+      - db
+  front:
+    build: "./front"
+    ports:
+      - "80:80"
   # scrap:
   #   build: "./scraper"
-  # redis:
-  #   image: redis
 volumes: 
   mysqlinstance:

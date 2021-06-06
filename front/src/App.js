@@ -1,10 +1,12 @@
 import './App.css';
 import StockContainer from './container/StockContainer';
-
+import { SnackbarProvider } from 'notistack';
 function App() {
   return (
     <div className="App">
-      <StockContainer />
+      <SnackbarProvider maxSnack={3}>
+        <StockContainer />
+      </SnackbarProvider>
     </div>
   );
 }

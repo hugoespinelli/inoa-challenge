@@ -1,5 +1,6 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
+import { useSnackbar } from 'notistack';
 import Grid from "@material-ui/core/Grid";
 import MaterialTable from "material-table";
 import DialogStockAlert from "../components/dialogStockAlert";
@@ -13,6 +14,8 @@ export default function StockContainer() {
     stock: {},
     action: "",
   });
+  const { enqueueSnackbar } = useSnackbar();
+  const alertTableRef = React.createRef();
 
   const handleOpen = (rowData, newAction) => {
     setModalOpen(true);
@@ -39,9 +42,27 @@ export default function StockContainer() {
     );
   };
 
-  const handleActionModal = (action, price) => {
-    StockApi.createAlert(action.stock.id, price * 100, action.action);
+  const handleActionModal = async (action, price) => {
+    try {
+      await StockApi.createAlert(action.stock.id, price * 100, action.action);
+      enqueueSnackbar('Alerta criado com sucesso!', {variant: 'success'});
+      alertTableRef.current.onQueryChange()
+    } catch(e) {
+      enqueueSnackbar('Falha ao criar o alerta.', {variant: 'error'});
+    } finally{
+      handleClose();
+    }
   };
+
+  async function paginate(promiseResult) {
+    const {data} = await promiseResult;
+    return {
+      data: data,
+      page: 0,
+      totalCount: data.length, 
+      count: data.length, 
+    }
+  }
 
   return (
     <React.Fragment>
@@ -70,7 +91,7 @@ export default function StockContainer() {
                 { title: "Código", field: "code" },
                 { title: "Preço", field: "price" },
               ]}
-              data={() => StockApi.list()}
+              data={() => paginate(StockApi.list())}
               actions={[
                 {
                   icon: "add_alert",
@@ -94,6 +115,7 @@ export default function StockContainer() {
           <Grid item md={6}>
             <MaterialTable
               title="Tabela de alerta de ações"
+              tableRef={alertTableRef}
               localization={{
                 pagination: {
                   labelDisplayedRows: "{from}-{to} até {count}",
@@ -112,8 +134,9 @@ export default function StockContainer() {
               columns={[
                 { title: "Código", field: "code" },
                 { title: "Alerta de preço", field: "price_alert" },
+                { title: "Operação", field: "type" },
               ]}
-              data={() => StockApi.listAlert()}
+              data={() => paginate(StockApi.listAlert())}
               actions={[
                 {
                   icon: "edit",

@@ -14,6 +14,9 @@ export default class StockApi {
     }
 
     static createAlert(id, price, action) {
-        return axios.post(`${DEFAULT_STOCK_URL}/alerts`, {id, price, user_id: 1, action});
+        return axios.post(
+            `${DEFAULT_STOCK_URL}/alerts`, 
+            {stock_id: id, price_alert: price, user_id: 1, action: action.toLowerCase()}
+        );
     }
 }
