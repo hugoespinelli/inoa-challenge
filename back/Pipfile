@@ -13,6 +13,7 @@ djangorestframework = "==3.9.1"
 djangorestframework-jwt = "==1.11.0"
 Django = "==2.2.10"
 mysqlclient = "*"
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.7"

@@ -108,6 +108,7 @@ export default function StockContainer() {
               ]}
               options={{
                 actionsColumnIndex: -1,
+                search: true
               }}
             />
           </Grid>

@@ -52,5 +52,3 @@ def scrap():
         print("Scrap ended successfully!")
     except Exception as e:
         print(f"Something goes wrong: {e}. Scrap interrupted!")
-
-scrap()

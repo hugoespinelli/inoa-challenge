@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const DEFAULT_STOCK_URL = "https://private-406ee0-stock33.apiary-mock.com/stock";
+const DEFAULT_STOCK_URL = "http://localhost:5000/stock";
 
 export default class StockApi {
 
@@ -10,13 +10,13 @@ export default class StockApi {
     }
 
     static listAlert() {
-        return axios.get(`${DEFAULT_STOCK_URL}/alerts`);
+        return axios.get(`${DEFAULT_STOCK_URL}/alert`);
     }
 
     static createAlert(id, price, action) {
         return axios.post(
-            `${DEFAULT_STOCK_URL}/alerts`, 
-            {stock_id: id, price_alert: price, user_id: 1, action: action.toLowerCase()}
+            `${DEFAULT_STOCK_URL}/alert`, 
+            {id_stock: id, price_alert: price, id_user: 1, type: action.toLowerCase()}
         );
     }
 }
