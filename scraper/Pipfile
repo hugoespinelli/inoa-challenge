@@ -11,8 +11,8 @@ flake8 = "*"
 [packages]
 beautifulsoup4 = "*"
 requests = "*"
-python-crontab = "*"
 pymysql = "*"
+schedule = "*"
 
 [requires]
 python_version = "3.7"

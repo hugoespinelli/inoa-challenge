@@ -14,38 +14,44 @@ services:
       - '3306'
     volumes:
       - mysqlinstance:/var/lib/mysql
-  # back:
-  #   build: "./back"
-  #   volumes:
-  #     - ./back:/app
-  #   environment:
-  #     MYSQL_DATABASE: ${STOCK_TABLE}
-  #     MYSQL_USER: ${STOCK_USER} 
-  #     MYSQL_PASSWORD: ${STOCK_PASSWORD}
-  #     DJANGO_SECRET_PHRASE: ${SECRET_PHRASE}
-  #   command: python manage.py runserver 0.0.0.0:5000
-  #   ports:
-  #   - "5000:5000"
-  #   depends_on:
-  #     - db
-  # front:
-  #   build: "./front"
-  #   command: npm start
-  #   volumes:
-  #     - ./front:/app
-  #   ports:
-  #     - "80:80"
-  #     - "3000:3000"
+  back:
+    build: "./back"
+    # volumes:
+    #   - ./back:/app
+    environment:
+      MYSQL_DATABASE: ${STOCK_TABLE}
+      MYSQL_USER: ${STOCK_USER} 
+      MYSQL_PASSWORD: ${STOCK_PASSWORD}
+      DJANGO_SECRET_PHRASE: ${SECRET_PHRASE}
+    command: python manage.py runserver 0.0.0.0:5000
+    ports:
+    - "5000:5000"
+    depends_on:
+      - db
+  front:
+    build: "./front"
+    # command: npm start
+    # volumes:
+    #   - ./front:/app
+    ports:
+      - "80:80"
+      - "3000:3000"
   scrap:
     build: "./scraper"
-    volumes:
-      - ./scraper:/app
+    # volumes:
+    #   - ./scraper:/app
     environment:
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER}
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
       EMAIL_PORT: ${EMAIL_PORT}
+      MYSQL_DATABASE: ${STOCK_TABLE}
+      MYSQL_USER: ${STOCK_USER}  
+      MYSQL_PASSWORD: ${STOCK_PASSWORD}
+      MYSQL_HOST: db
+      PYTHONUNBUFFERED: 1
     ports:
       - ${EMAIL_PORT}:${EMAIL_PORT}
+    command: "pipenv run python cron.py"
 volumes: 
   mysqlinstance:
