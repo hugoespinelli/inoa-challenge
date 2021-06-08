@@ -16,8 +16,6 @@ services:
       - mysqlinstance:/var/lib/mysql
   back:
     build: "./back"
-    # volumes:
-    #   - ./back:/app
     environment:
       MYSQL_DATABASE: ${STOCK_TABLE}
       MYSQL_USER: ${STOCK_USER} 
@@ -30,16 +28,11 @@ services:
       - db
   front:
     build: "./front"
-    # command: npm start
-    # volumes:
-    #   - ./front:/app
     ports:
       - "80:80"
       - "3000:3000"
   scrap:
     build: "./scraper"
-    # volumes:
-    #   - ./scraper:/app
     environment:
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER}
