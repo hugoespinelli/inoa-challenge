@@ -73,10 +73,6 @@ export default function StockContainer() {
             <MaterialTable
               title="Tabela de ações"
               localization={{
-                pagination: {
-                  labelDisplayedRows: "{from}-{to} até {count}",
-                  labelRowsSelect: "linhas",
-                },
                 toolbar: {
                   searchPlaceholder: "Procurar ação",
                 },
@@ -108,7 +104,8 @@ export default function StockContainer() {
               ]}
               options={{
                 actionsColumnIndex: -1,
-                search: true
+                paging: false,
+                search: false,
               }}
             />
           </Grid>
@@ -118,16 +115,6 @@ export default function StockContainer() {
               title="Tabela de alerta de ações"
               tableRef={alertTableRef}
               localization={{
-                pagination: {
-                  labelDisplayedRows: "{from}-{to} até {count}",
-                  labelRowsSelect: "linhas",
-                },
-                toolbar: {
-                  searchPlaceholder: "Procurar ação",
-                },
-                header: {
-                  actions: "Ações",
-                },
                 body: {
                   emptyDataSourceMessage: "Sem ações disponíveis",
                 },
@@ -138,22 +125,9 @@ export default function StockContainer() {
                 { title: "Operação", field: "type" },
               ]}
               data={() => paginate(StockApi.listAlert())}
-              actions={[
-                {
-                  icon: "edit",
-                  tooltip: "Editar",
-                  onClick: (event, rowData) =>
-                    alert("You saved " + rowData.name),
-                },
-                (rowData) => ({
-                  icon: "delete",
-                  tooltip: "Deletar",
-                  onClick: (event, rowData) =>
-                    console.log("You want to delete " + rowData.name),
-                }),
-              ]}
               options={{
-                actionsColumnIndex: -1,
+                paging: false,
+                search: false,
               }}
             />
           </Grid>

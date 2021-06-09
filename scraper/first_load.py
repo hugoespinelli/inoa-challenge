@@ -1,12 +1,7 @@
 import pymysql.cursors
 
 from utils import load_stocks_from_file
-from constants import (
-    HOST,
-    USER,
-    PASSWORD,
-    DATABASE,
-)
+from database import get_connection
 
 def insert_stocks(cursor, stocks):
     sql = "INSERT INTO `stock` (`name`, `code`) VALUES (%s, %s)"
@@ -23,14 +18,7 @@ def should_first_load(cursor):
 def first_load():
 
     # Connect to the database
-    connection = pymysql.connect(host=HOST,
-                                 user=USER,
-                                 password=PASSWORD,
-                                 database=DATABASE,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-
-
+    connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
 
@@ -42,7 +30,7 @@ def first_load():
                 insert_stocks(cursor, stocks_scraped)
             else:
                 print("Database already sync!...")
-               
+                
         connection.commit()
 
   

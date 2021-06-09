@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
-from email_sender import send_email
 
+from email_sender import send_email
 from scrap import scrap
 from load_tables import load_tables
 from first_load import first_load

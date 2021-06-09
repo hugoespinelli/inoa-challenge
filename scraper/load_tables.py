@@ -1,12 +1,7 @@
 import pymysql.cursors
 
 from utils import load_stocks_from_file
-from constants import (
-    HOST,
-    USER,
-    PASSWORD,
-    DATABASE,
-)
+from database import get_connection
 
 
 def get_stocks_registered(cursor, stock_list):
@@ -30,13 +25,7 @@ def load_tables():
     print("Starting load prices process...")
 
     # Connect to the database
-    connection = pymysql.connect(host=HOST,
-                                 user=USER,
-                                 password=PASSWORD,
-                                 database=DATABASE,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-
+    connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
 
